@@ -1,4 +1,5 @@
 ﻿using Shared;
+using Shared.Exceptions;
 
 namespace POSRoutines
 {
@@ -11,31 +12,32 @@ namespace POSRoutines
             _denominationService = denominationService ?? throw new ArgumentNullException(nameof(denominationService));
         }
 
-        public Dictionary<Denomination, int> CalculateChange(decimal totalCost, Dictionary<Denomination, int> totalGiven)
+        public Dictionary<Denomination, int> CalculateChange(decimal totalCost, Dictionary<Denomination, int> customersGivenMoney)
         {
+            if (!ValidateCustomersGivenMoney(customersGivenMoney, out var failedDenomination))
+                throw new DenominationNotValidException(failedDenomination, _denominationService.Currency);
+
             Dictionary<Denomination, int> changeInDenominations = new Dictionary<Denomination, int>();
 
-            var totalGivenByCustomer = GetTotalGivenByCustomer(totalGiven);
+            var totalGivenByCustomer = GetTotalGivenByCustomer(customersGivenMoney);
 
             if (totalGivenByCustomer < totalCost)
-                throw new ArgumentException("Total given by customer must be greater than or equal to the total cost.");
+                throw new PaymentLessThanTotalException(totalCost, totalGivenByCustomer);
 
             decimal change = totalGivenByCustomer - totalCost;
 
             if (change == 0)
                 return changeInDenominations;
 
-            var a = _denominationService.Denominations.OrderByDescending(d => d.Value);
-
             foreach (var denomination in _denominationService.Denominations.OrderByDescending(d => d.Value))
             {
                 var count = (int)(change / denomination.Value);
-                if (count < 0)
+                if (count <= 0)
                     continue;
 
                 changeInDenominations[denomination] = count;
                 change -= count * denomination.Value;
-                
+
                 if (change <= 0)
                     break;
             }
@@ -43,15 +45,29 @@ namespace POSRoutines
             return changeInDenominations;
         }
 
+        private bool ValidateCustomersGivenMoney(Dictionary<Denomination, int> customersGivenMoney, out Denomination? failedDenomination)
+        {
+            failedDenomination = null;
+
+            foreach (var denomination in customersGivenMoney)
+                if (_denominationService.IsValidDenomination(denomination.Key.Value) is not true)
+                {
+                    failedDenomination = denomination.Key;
+                    return false;
+                }
+
+            return true;
+        }
+
         private decimal GetTotalGivenByCustomer(Dictionary<Denomination, int> totalGiven)
         {
             decimal total = 0;
-            
+
             foreach (var denomination in totalGiven)
             {
                 total += denomination.Key.Value * denomination.Value;
             }
-            
+
             return total;
         }
     }

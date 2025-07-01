@@ -22,7 +22,8 @@ internal class Program
             return new DenominationService(
                 currenciesConfig.Where(c => c.Name.Equals(localCurrencyConfig))
                                 .SelectMany(c => c.Denominations)
-                                .ToList()
+                                .ToList(),
+                localCurrencyConfig
             );
         });
 
