@@ -9,7 +9,7 @@ namespace Shared.Exceptions
     public class TotalCostIsNegativeException : ArgumentException
     {
         public TotalCostIsNegativeException(decimal totalCost)
-        : base($"Total cost cannot lower than zero. Provided value: {totalCost}.")
+        : base($"Total cost cannot be lower than zero. Provided value: {totalCost}.")
         {
         }
     }

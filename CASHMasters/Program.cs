@@ -10,6 +10,8 @@ internal class Program
 {
     private static void Main(string[] args)
     {
+        /// Configuration
+        /// 
         var ServiceCollection = new ServiceCollection();
         var config = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json")
@@ -34,28 +36,37 @@ internal class Program
         var denominationService = serviceProvider.GetRequiredService<IDenominationService>();
 
 
+        /// Application
+        /// 
         bool exit = false;
         while (!exit)
         {
-            Console.WriteLine("\n\rCASHMasters POS Change Calculator \n\r");
+            try
+            {
+                Console.WriteLine("\n\rCASHMasters POS Change Calculator \n\r");
 
-            decimal totalCost = CaptureTotalCost();
+                decimal totalCost = CaptureTotalCost();
+            
+                var customersGivenMoney = CaptureDenominationsInput(denominationService.Denominations);            
 
-            var customersGivenMoney = CaptureDenominationsInput(denominationService.Denominations);
+                Console.WriteLine();
 
-            Console.WriteLine();
+                var payment = new PaymentMethodCash(totalCost, customersGivenMoney, serviceProvider.GetRequiredService<IChangeCalculator>());
+                payment.GetChange();
 
-            var payment = new PaymentMethodCash(totalCost, customersGivenMoney, serviceProvider.GetRequiredService<IChangeCalculator>());
-            payment.GetChange();
+                Console.WriteLine("*******************************************************\n\rTransaction completed");
+                Console.WriteLine("1. Start another transaction");
+                Console.WriteLine("2. Exit");
 
-            Console.WriteLine("*******************************************************\n\rTransaction completed");
-            Console.WriteLine("1. Start another transaction");
-            Console.WriteLine("2. Exit");
+                var input = Console.ReadLine();
 
-            var input = Console.ReadLine();
-
-            if (input == "2")
-                exit = true;
+                if (input == "2")
+                    exit = true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 
