@@ -3,7 +3,7 @@ using Shared.Exceptions;
 
 namespace POSRoutines
 {
-    public class ChangeCalculator
+    public class ChangeCalculator : IChangeCalculator
     {
         private readonly IDenominationService _denominationService;
 

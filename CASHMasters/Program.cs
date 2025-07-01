@@ -7,8 +7,6 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        Console.WriteLine("Hello, World!");
-
         var ServiceCollection = new ServiceCollection();
         var config = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json")

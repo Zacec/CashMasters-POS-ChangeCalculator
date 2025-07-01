@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POSRoutinesTests", "POSRuti
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{8498F74C-8089-400D-9861-BC6EF5C39378}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contracts", "Contracts\Contracts.csproj", "{875EA0BB-A990-4973-859F-BEBC75CA9CC8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{8498F74C-8089-400D-9861-BC6EF5C39378}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8498F74C-8089-400D-9861-BC6EF5C39378}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8498F74C-8089-400D-9861-BC6EF5C39378}.Release|Any CPU.Build.0 = Release|Any CPU
+		{875EA0BB-A990-4973-859F-BEBC75CA9CC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{875EA0BB-A990-4973-859F-BEBC75CA9CC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{875EA0BB-A990-4973-859F-BEBC75CA9CC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{875EA0BB-A990-4973-859F-BEBC75CA9CC8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
