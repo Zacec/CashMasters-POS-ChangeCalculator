@@ -69,6 +69,30 @@ namespace POSRoutinesTests
         }
 
         [Fact]
+        public void CalculateChange_TotalCostIsZero_ReturnsTheSameMoneyGivenByCustomer()
+        {
+            decimal totalCost = 0;
+            var customerGivenMoney = new Dictionary<Denomination, int>
+            {
+                { _denominationService.GetDenominationByName("Five Dollar"), 2 },
+                { _denominationService.GetDenominationByName("One Dollar"), 5 }
+            };          
+
+            var result = _changeCalculator.CalculateChange(totalCost, customerGivenMoney);
+
+            Assert.Equal(customerGivenMoney, result);
+        }
+
+        [Fact]
+        public void CalculateChange_GivenMoneyIsLowerThanZero_ReturnsException()
+        {
+            decimal totalCost = -1.10M;
+            var customerGivenMoney = new Dictionary<Denomination, int>();
+            var result = Assert.Throws<TotalCostIsNegativeException>(() =>
+                _changeCalculator.CalculateChange(totalCost, customerGivenMoney));
+        }
+
+        [Fact]
         public void CalculateChange_GivenMoneyIsNotValid_ReturnsException()
         {
             decimal totalCost = 15.00M;

@@ -18,9 +18,13 @@ namespace POSRoutines
             if (!ValidateCustomersGivenMoney(customersGivenMoney, out var failedDenomination))
                 throw new DenominationNotValidException(failedDenomination, _denominationService.Currency);
 
-            Dictionary<Denomination, int> changeInDenominations = new Dictionary<Denomination, int>();
+            if (totalCost == 0)
+                return customersGivenMoney;
 
-            var totalGivenByCustomer = GetTotalGivenByCustomer(customersGivenMoney);
+            if (totalCost < 0)
+                throw new TotalCostIsNegativeException(totalCost);
+
+            var totalGivenByCustomer = customersGivenMoney.Sum(kv => kv.Key.Value * kv.Value);
 
             if (totalGivenByCustomer < totalCost)
                 throw new PaymentLessThanTotalException(totalCost, totalGivenByCustomer);
@@ -28,7 +32,16 @@ namespace POSRoutines
             decimal change = totalGivenByCustomer - totalCost;
 
             if (change == 0)
-                return changeInDenominations;
+                return new Dictionary<Denomination, int>();
+            
+            var changeInDenominations = GetChange(change);
+
+            return changeInDenominations;
+        }
+
+        private Dictionary<Denomination, int> GetChange(decimal change)
+        {
+            Dictionary<Denomination, int> changeInDenominations = new();
 
             foreach (var denomination in _denominationService.Denominations.OrderByDescending(d => d.Value))
             {
@@ -58,18 +71,6 @@ namespace POSRoutines
                 }
 
             return true;
-        }
-
-        private decimal GetTotalGivenByCustomer(Dictionary<Denomination, int> totalGiven)
-        {
-            decimal total = 0;
-
-            foreach (var denomination in totalGiven)
-            {
-                total += denomination.Key.Value * denomination.Value;
-            }
-
-            return total;
         }
     }
 }
