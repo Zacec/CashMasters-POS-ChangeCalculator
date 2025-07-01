@@ -1,4 +1,5 @@
-﻿using Shared;
+﻿using Contracts;
+using Shared;
 using Shared.Exceptions;
 
 namespace POSRoutines
